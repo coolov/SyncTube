@@ -1,0 +1,10 @@
+# Emacs Stuff
+*~
+\#*\#
+.\#*
+
+# Mac Stuff
+.DS_Store
+
+# Node Stuff
+node_modules

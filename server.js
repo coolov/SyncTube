@@ -21,12 +21,11 @@ var listenPort = process.argv[2] ? process.argv[2] : 3000
 var chatMessages = [];
 var messageNumber = 0;
 
-/*
+
 // Handle routing to applications
 app.get('/', function(req, res) {
     res.sendFile('player.html', {root: __dirname + '/apps/player'});
 });
-*/
 app.get('/admin', function(req, res) {
     res.sendFile('admin.html', {root: __dirname + '/apps/admin'});
 });
@@ -55,52 +54,13 @@ app.get('/adminAPI/getQueue', function(req, res) {
 // Handle routing to static content
 app.use(express.static(__dirname));
 
-/*
 io.on('connection', function(socket){
-    socket.on('changeVideo', function(videoId) {
-
+    socket.on('getVideo', function() {
+	videoInfo = playerManager.currentVideoInfo()
+	socket.emit('setVideo', videoInfo.videoId);
     });
- 
-    socket.on('getMessages', function() {
-	console.log('getting messages');
-	socket.emit('messageList', chatMessages);
-    });
-
-    socket.on('getVideoStartTime', function() {
-	socket.emit('syncVideo', videoStartTime);
-    });
-
-    socket.on('getCurrentVideo', function(callback) {
-	// This handles changing videos for connecting user
-	console.log('Getting Current Video');
-	console.log(videoQueue.getCurrentVideo());
-	socket.emit('setCurrentVideo', videoQueue.getCurrentVideo());
-    });
-
-    socket.on('addVideoToQueue', function(videoId) {
-	videoQueue.addVideoToQueue(videoId);
-    });
-
-    socket.on('newMessage', function(message) {
-	// Probably will need to read in the messagelist when we
-	//  start the server in order to maintain the chat state
-	//  between restarts
-	messageNumber++;
-	chatMessages.push({messageNumber: messageNumber, message:message});
-	if (chatMessages.length > 10) {
-	    chatMessages.shift()
-	}
-	console.log(chatMessages);
-	io.emit('messageList', chatMessages);
-    });
-
-    socket.on('disconnect', function() {
-	console.log('disconnected');
-    });
-
 });
 
-*/
 server.listen(listenPort, function(){
     console.log('listening on *:', listenPort);
 });

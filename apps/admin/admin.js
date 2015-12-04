@@ -4,7 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 // Custom libs
-var VideoController = require('./../../reactModules/videoController.jsx');
+var VideoController = require('./../../reactModules/videoController/videoController.jsx');
 
 var Site = React.createClass({displayName: "Site",
   render: function() {
@@ -21,7 +21,7 @@ ReactDOM.render(
   document.getElementById('content')
 );
 
-},{"./../../reactModules/videoController.jsx":332,"react":264,"react-dom":135}],2:[function(require,module,exports){
+},{"./../../reactModules/videoController/videoController.jsx":332,"react":264,"react-dom":135}],2:[function(require,module,exports){
 module.exports = after
 
 function after(count, callback, err_cb) {

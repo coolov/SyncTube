@@ -37,6 +37,7 @@ var Player = React.createClass({
     return (
       <div>
 	<div id="player"></div>
+	<div></div>
 	<button type="button" onClick={this.syncVideo}>Sync Video</button>
       </div>
     );

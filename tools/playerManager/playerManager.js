@@ -56,6 +56,7 @@ function nextVideo(io) {
     videoQueue.shift();
     updateVideoStartTime();
     io.emit('changeVideo', videoQueue[0].videoId);
+    io.emit('updateQueue', videoQueue);
 }
 
 function isVideoOver() {

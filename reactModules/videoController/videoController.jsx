@@ -1,6 +1,7 @@
 // npm imports
 var React = require('react');
 var request = require('request');
+var socket = require('socket.io-client')()
 
 var VideoQueue = React.createClass({
   render: function() {
@@ -73,7 +74,13 @@ var VideoController = React.createClass({
     );
   },
   componentDidMount: function() {
+
     var self = this;
+    socket.on('updateQueue', function(videoQueue) {
+      console.log('got update');
+      self.setState({videoQueue: videoQueue});
+    });
+
     request.get('http://localhost:3000/adminAPI/getQueue',
       function(err, httpResponse, body) {
 	var response = JSON.parse(body);

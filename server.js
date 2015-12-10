@@ -10,7 +10,6 @@ var playerManager = require('./tools/playerManager/playerManager');
 playerManager.queueVideo('BZP1rYjoBgI', function() {
     var videoInfo = playerManager.currentVideoInfo();
     io.emit('changeVideo', videoInfo.videoId);
-    console.log('emitted new vid');
     playerManager.queueVideo('8g2KKGgK-0w');
 });
 

@@ -62,8 +62,6 @@ io.on('connection', function(socket) {
 	socket.emit('changeVideo', videoInfo.videoId);
     });
     socket.on('syncMe', function() {
-	console.log(Date.now());
-	console.log(playerManager.currentVideoStartTime());
 	socket.emit('syncVideo', playerManager.currentVideoStartTime());
     });
 });

@@ -7,9 +7,10 @@ var ytPlayer = require('./ytPlayer.js');
 
 var Player = React.createClass({
   registerSocketCommands: function(callback) {
+    var self = this;
     socket.on('changeVideo', function(videoId) {
-      ytPlayer.changeVideo(videoId, function(){
-	socket.emit('syncMe');
+      ytPlayer.changeVideo(videoId, function() {
+	self.syncVideo();
       });
     });
     socket.on('syncVideo', function(startTime) {
@@ -21,6 +22,9 @@ var Player = React.createClass({
   getCurrentVideo: function() {
     socket.emit('getCurrentVideo');
   },
+  syncVideo: function() {
+    socket.emit('syncMe');
+  },
   playerMounted: function() {
     this.registerSocketCommands(function() {
       this.getCurrentVideo();
@@ -31,7 +35,10 @@ var Player = React.createClass({
   },
   render: function() {
     return (
-      <div id="player"></div>
+      <div>
+	<div id="player"></div>
+	<button type="button" onClick={this.syncVideo}>Sync Video</button>
+      </div>
     );
   }
 });

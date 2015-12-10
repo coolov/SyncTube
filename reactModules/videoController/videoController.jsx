@@ -31,7 +31,7 @@ var VideoController = React.createClass({
   changeVideo: function(event) {
     event.preventDefault();
     var videoId = this.state.videoID.trim();
-    var that = this;
+    var self = this;
     queue = this.state.videoQueue;
     queue[0] = {
       videoId: videoId,
@@ -46,14 +46,14 @@ var VideoController = React.createClass({
       }},
       function(err, httpResponse, body) {
 	var response = JSON.parse(body);
-	that.setState({videoQueue: response.videoQueue});
+	self.setState({videoQueue: response.videoQueue});
       }
     );
   },
   queueVideo: function(event) {
     event.preventDefault();
     var videoId = this.state.videoID.trim();
-    var that = this;
+    var self = this;
     queue  = this.state.videoQueue;
     queue.push({
       videoId: videoId,
@@ -68,16 +68,16 @@ var VideoController = React.createClass({
       }},
       function(err, httpResponse, body) {
 	var response = JSON.parse(body);
-	that.setState({videoQueue: response.videoQueue});
+	self.setState({videoQueue: response.videoQueue});
       }
     );
   },
   componentDidMount: function() {
-    var that = this;
+    var self = this;
     request.get('http://localhost:3000/adminAPI/getQueue',
       function(err, httpResponse, body) {
 	var response = JSON.parse(body);
-	that.setState({videoQueue: response.videoQueue});
+	self.setState({videoQueue: response.videoQueue});
       }
     );
   },

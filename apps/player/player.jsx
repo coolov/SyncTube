@@ -1,8 +1,8 @@
 var ReactDOM = require('react-dom');
 var React = require('react');
-var socket = require('socket.io-client')('http://localhost:3000');
-var ytPlayer = require('./ytplayer.js');
+var Player = require('./../../reactModules/videoPlayer/videoPlayer.jsx');
 
+/*
 var MessageList = React.createClass({
   render: function() {
     var messages = this.props.messages.map(function(chatMessage) {
@@ -69,44 +69,14 @@ var Messenger = React.createClass({
     );
   }
 });
-
-var Player = React.createClass({
-  componentDidMount: function() {
-    socket.on('newVideo', function(videoId) {
-      ytPlayer.changeVideo(videoId);
-    });
-
-    socket.on('setCurrentVideo', function(videoId) {
-      ytPlayer.changeVideo(videoId, function() {
-	socket.emit('getVideoStartTime');
-      });
-    });
-
-    socket.on('syncVideo', function(videoStartTime) {
-      console.log(videoStartTime);
-      timeDiffInMilliSeconds = Date.now() - videoStartTime;
-      timeDiffInSeconds = Math.trunc(timeDiffInMilliSeconds/1000);
-      ytPlayer.setTime(timeDiffInSeconds);
-    });
-
-    ytPlayer.getPlayer(function() {
-      socket.emit('getCurrentVideo');
-    });
-  },
-  render: function() {
-    return (
-	<div id="player"></div>
-    );
-  }
-});
+*/
 
 var Site = React.createClass({
-
   render: function() {
+    console.log('rendering')
     return (
       <div>
-	<Player />
-	<Messenger />
+	<Player.Player />
       </div>
     );
   }

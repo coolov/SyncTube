@@ -1,7 +1,6 @@
 // npm imports
 var React = require('react');
 var request = require('request');
-var socket = require('socket.io-client')('http://localhost:3000');
 
 var VideoQueue = React.createClass({
   render: function() {

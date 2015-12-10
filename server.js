@@ -6,14 +6,14 @@ var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 
 // Custom libs
-var playerManager = require('./models/playerManager/playerManager');
-playerManager.queueVideo('8g2KKGgK-0w');
-// Start checking if the video is over every second
-setInterval(function () {
-    if (playerManager.isVideoOver()) {
-	playerManager.nextVideo();
-    }
-}, 1000);
+var playerManager = require('./tools/playerManager/playerManager');
+playerManager.queueVideo('BZP1rYjoBgI', function() {
+    var videoInfo = playerManager.currentVideoInfo();
+    io.emit('changeVideo', videoInfo.videoId);
+    console.log('emitted new vid');
+    playerManager.queueVideo('8g2KKGgK-0w');
+});
+
 
 
 // Globals
@@ -45,23 +45,36 @@ app.post('/adminAPI/changeVideo', function(req, res) {
     playerManager.changeCurrentVideo(videoId, function(videoQueue) {
 	res.json({videoQueue: videoQueue});
     });
+    io.emit('changeVideo', videoId);
 });
 app.get('/adminAPI/getQueue', function(req, res) {
     res.json({videoQueue: playerManager.getQueue()});
 });
 
-
 // Handle routing to static content
 app.use(express.static(__dirname));
 
-io.on('connection', function(socket){
-    socket.on('getVideo', function() {
-	videoInfo = playerManager.currentVideoInfo()
-	socket.emit('setVideo', videoInfo.videoId);
+io.on('connection', function(socket) {
+    console.log('got a connection');
+
+    socket.on('getCurrentVideo', function() {
+	var videoInfo = playerManager.currentVideoInfo();
+	socket.emit('changeVideo', videoInfo.videoId);
+    });
+    socket.on('syncMe', function() {
+	console.log(Date.now());
+	console.log(playerManager.currentVideoStartTime());
+	socket.emit('syncVideo', playerManager.currentVideoStartTime());
     });
 });
 
-server.listen(listenPort, function(){
+server.listen(listenPort, '0.0.0.0', function(){
     console.log('listening on *:', listenPort);
 });
 
+// Start checking if the video is over every second
+setInterval(function () {
+    if (playerManager.isVideoOver()) {
+	playerManager.nextVideo(io);
+    }
+}, 1000);

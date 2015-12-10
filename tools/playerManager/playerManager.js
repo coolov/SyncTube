@@ -11,7 +11,11 @@ function getVideoRunTime(videoId, callback) {
 }
 
 function updateVideoStartTime() {
-    videoStartTime = Date.now()
+    videoStartTime = Date.now();
+}
+
+function getVideoStartTime() {
+    return videoStartTime;
 }
 
 function addVideoToQueue(videoId, callback) {
@@ -48,9 +52,10 @@ function changeCurrentVideo(videoId, callback) {
     });
 }
 
-function nextVideo() {
+function nextVideo(io) {
     videoQueue.shift();
     updateVideoStartTime();
+    io.emit('changeVideo', videoQueue[0].videoId);
 }
 
 function isVideoOver() {
@@ -76,6 +81,7 @@ module.exports = {
     nextVideo: nextVideo,
     isVideoOver: isVideoOver,
     currentVideoInfo: getCurrentVideoInfo,
-    getQueue: getQueue
+    getQueue: getQueue,
+    currentVideoStartTime: getVideoStartTime
 }
 

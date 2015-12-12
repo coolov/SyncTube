@@ -10,16 +10,13 @@ var playerManager = require('./tools/playerManager/playerManager');
 playerManager.queueVideo('BZP1rYjoBgI', function() {
     var videoInfo = playerManager.currentVideoInfo();
     io.emit('changeVideo', videoInfo.videoId);
-    playerManager.queueVideo('8g2KKGgK-0w');
+    //playerManager.queueVideo('8g2KKGgK-0w');
 });
-
-
 
 // Globals
 var listenPort = process.argv[2] ? process.argv[2] : 3000
 var chatMessages = [];
 var messageNumber = 0;
-
 
 // Handle routing to applications
 app.get('/', function(req, res) {
@@ -28,7 +25,6 @@ app.get('/', function(req, res) {
 app.get('/admin', function(req, res) {
     res.sendFile('admin.html', {root: __dirname + '/apps/admin'});
 });
-
 
 // Admin API
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,7 +50,8 @@ app.get('/adminAPI/getQueue', function(req, res) {
 app.use(express.static(__dirname));
 
 io.on('connection', function(socket) {
-    console.log('got a connection');
+    // Sync Video if we restart server
+    socket.emit('syncVideo', playerManager.currentVideoStartTime());
 
     socket.on('getCurrentVideo', function() {
 	var videoInfo = playerManager.currentVideoInfo();
@@ -63,6 +60,10 @@ io.on('connection', function(socket) {
     socket.on('syncMe', function() {
 	socket.emit('syncVideo', playerManager.currentVideoStartTime());
     });
+    socket.on('sendMessage', function(message) {
+	console.log(message);
+	socket.broadcast.emit('newMessage', message);
+    })
 });
 
 server.listen(listenPort, '0.0.0.0', function(){

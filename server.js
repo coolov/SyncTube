@@ -50,6 +50,7 @@ app.use(express.static(__dirname));
 
 io.on('connection', function(socket) {
     io.emit('updateQueue');
+
     socket.on('sendMessage', function(message) {
 	socket.broadcast.emit('newMessage', message);
     })

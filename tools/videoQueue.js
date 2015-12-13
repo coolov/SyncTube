@@ -1,7 +1,12 @@
 'use strict';
+var ytDataApi = require('./ytDataApi');
 
 var queue = [];
 var videoNumber = 0;
+
+function getVideoInfo(videoId, callback) {
+    
+}
 
 function queueVideo(videoId, callback) {
     queue.push({

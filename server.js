@@ -61,7 +61,6 @@ io.on('connection', function(socket) {
 	socket.emit('syncVideo', playerManager.currentVideoStartTime());
     });
     socket.on('sendMessage', function(message) {
-	console.log(message);
 	socket.broadcast.emit('newMessage', message);
     })
 });

@@ -1,43 +1,29 @@
-var React = require('react')
-var socket = require('socket.io-client')();
+'use strict';
+
+var React = require('react');
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
-
+var messageStore = require('./../../stores/messageStore');
+var messageActions = require('./../../actions/messageActions');
 
 var MessageList = React.createClass({
   getInitialState: function() {
-    return {
-      messageList: []
-    };
+    return messageStore.getState();
   },
   componentDidMount: function() {
     var self = this;
-    socket.on('newMessage', function(message) {
-      var messageList = self.state.messageList;
-      listSize = messageList.length;
-      messageList.push({
-	messageText: message,
-	messageNum: listSize
-      });
-      self.setState({messageList: messageList});
-    });
-    eventEmitter.on('sentMessage', function(message) {
-      var messageList = self.state.messageList;
-      listSize = messageList.length;
-      messageList.push({
-	messageText: message,
-	messageNum: listSize
-      });
-      self.setState({messageList: messageList});
-    });
+    messageStore.onChange(function() {
+      self.setState(messageStore.getState());
+    })
   },
   render: function() {
-    messages = this.state.messageList.map(function(messageInfo) {
+    var messages = this.state.messageList.map(function(messageInfo) {
       return (
 	<ul>
-	  <li key={messageInfo.messageNum}>{messageInfo.messageText}</li>
+	  <li key={messageInfo.messageNumber}>{messageInfo.messageText}</li>
 	</ul>
       )});
+    
     return (
       <ul>
 	{messages}
@@ -57,9 +43,7 @@ var MessageInput = React.createClass({
   },
   handleMessageSend: function(event) {
     event.preventDefault();
-    var message = this.state.message;
-    socket.emit('sendMessage', message);
-    eventEmitter.emit('sentMessage', message);
+    messageActions.sendMessage(this.state.message);
     this.setState({message: ''});
   },
   render: function() {
@@ -72,7 +56,3 @@ var MessageInput = React.createClass({
   }
 });
 
-module.exports = {
-  Input: MessageInput,
-  List: MessageList
-}

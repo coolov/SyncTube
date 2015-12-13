@@ -8,6 +8,8 @@ var queue = [];
 function queueVideo(videoId) {
     queue.push({
 	videoId: videoId,
+	videoTitle: "Fetching Title...",
+	runTimeInMilliseconds: -1,
 	videoNumber: -1
     });
     eventEmitter.emit('videoQueueStoreChanged');
@@ -17,15 +19,14 @@ function changeVideo(videoId) {
     if (queue) {
 	queue[0] = ({
 	    videoId: videoId,
+	    videoTitle: "Fetching Title...",
+	    runTimeInMilliseconds: -1,
 	    videoNumber: -1
 	});
+	eventEmitter.emit('videoQueueStoreChanged');
     } else {
-	queue.push({
-	    videoId: videoId,
-	    videoNumber: -1
-	});
+	queueVideo(videoId)
     }
-    eventEmitter.emit('videoQueueStoreChanged');
 }
 
 function setQueue(videoQueue) {

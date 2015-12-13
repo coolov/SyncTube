@@ -1,22 +1,8 @@
+'use strict';
+
 var https = require('https');
 
 var apiKeyHolder = require('./../apiKeys');
-
-function getVideoLengthInMilliseconds(videoId, callback) {
-    searchUrl ='https://www.googleapis.com/youtube/v3/videos?id=' + videoId + '&part=contentDetails&key=' + apiKeyHolder.ytDataApiKey()
-    https.get(searchUrl, function(response) {
-	var str = '';
-	response.on('data', function (chunk) {
-	    str += chunk;
-	});
-	response.on('end', function () {
-	    var videoInfo = JSON.parse(str).items[0];
-	    var videoDurationInISO8601 = videoInfo.contentDetails.duration;
-	    var durationInMilliseconds = ISO8601DurationToMilliseconds(videoDurationInISO8601);
-	    callback(durationInMilliseconds);
-	});
-    });
-}
 
 function ISO8601DurationToMilliseconds(durationString) {
     var timeUnitMultipliers = {
@@ -32,10 +18,47 @@ function ISO8601DurationToMilliseconds(durationString) {
 	durationInSeconds += amount * timeUnitMultipliers[timeUnit];
     });
 
-    durationInMilliseconds = durationInSeconds * 1000
+    var durationInMilliseconds = durationInSeconds * 1000
     return durationInMilliseconds;
 }
 
+function getVideoProperties(videoId, properties, callback) {
+    getVideoInfo(videoId, function(videoInfo) {
+	var requestedProperties = {}
+	requestedProperties.videoId = videoId;
+	properties.forEach(function(propertyName) {
+	    switch (propertyName) {
+	    case 'title':
+		requestedProperties.title = videoInfo.snippet.title
+		break;
+	    case "runTime":
+		var videoDurationInISO8601 = videoInfo.contentDetails.duration;
+		var durationInMilliseconds = ISO8601DurationToMilliseconds(videoDurationInISO8601);
+		requestedProperties.runTime = durationInMilliseconds;
+		break;
+	    default:
+		break;
+	    }
+	});
+	callback(requestedProperties);
+    });
+}
+
+function getVideoInfo(videoId, callback) {
+    var searchUrl ='https://www.googleapis.com/youtube/v3/videos?id=' + videoId + '&part=contentDetails,snippet&key=' + apiKeyHolder.ytDataApiKey()
+    https.get(searchUrl, function(response) {
+	var str = '';
+	response.on('data', function (chunk) {
+	    str += chunk;
+	});
+	response.on('end', function () {
+	    var videoInfo = JSON.parse(str).items[0];
+	    callback(videoInfo);
+	});
+    });
+}
+
+
 module.exports = {
-    getVideoLengthInMilliseconds: getVideoLengthInMilliseconds
+    getVideoProperties: getVideoProperties
 }

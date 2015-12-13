@@ -19,7 +19,7 @@ var VideoQueue = React.createClass({
   render: function() {
     queue = this.state.videoQueue.map(function(videoInfo) {
       return(
-	<li key={videoInfo.videoNumber}>{videoInfo.videoId}</li>
+	<li key={videoInfo.videoNumber}>{videoInfo.videoId} {videoInfo.videoTitle}</li>
       )
     });
 

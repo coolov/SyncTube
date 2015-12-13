@@ -1,33 +1,43 @@
 'use strict';
+
 var ytDataApi = require('./ytDataApi');
 
 var queue = [];
 var videoNumber = 0;
-
-function getVideoInfo(videoId, callback) {
-    
-}
+var videoStartTime = 0;
 
 function queueVideo(videoId, callback) {
-    queue.push({
-	videoId: videoId,
-	videoNumber: videoNumber
+    ytDataApi.getVideoProperties(videoId, ['title', 'runTime'], function(videoProperties) {
+	queue.push({
+	    videoId: videoProperties.videoId,
+	    videoTitle: videoProperties.title,
+	    runTimeInMilliseconds: videoProperties.runTime, 
+	    videoNumber: videoNumber
+	});
+	videoNumber++;
+	if (queue.length == 1) {
+	    videoStartTime = Date.now();
+	}
+	callback();
     });
-    videoNumber++;
-    callback();
 }
 
 function changeVideo(videoId, callback) {
     if (queue) {
-	queue[0] = {
-	    videoId: videoId,
-	    videoNumber: videoNumber
-	};
+	ytDataApi.getVideoProperties(videoId, ['title', 'runTime'], function(videoProperties) {
+	    queue[0] = {
+		videoId: videoProperties.videoId,
+		videoTitle: videoProperties.title,
+		runTimeInMilliseconds: videoProperties.runTime, 
+		videoNumber: videoNumber
+	    };
+	    videoNumber++;
+	    videoStartTime = Date.now()
+	    callback();
+	});
     } else {
 	queue.push(videoId);
     }
-    videoNumber++;
-    callback();
 }
 
 function getQueue() {

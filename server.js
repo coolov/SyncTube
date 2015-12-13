@@ -1,3 +1,5 @@
+'use strict';
+
 // npm imports
 var express = require('express');
 var app = express();

@@ -3,8 +3,8 @@
 var React = require('react');
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
-var messageStore = require('./../../stores/messageStore');
-var messageActions = require('./../../actions/messageActions');
+var messageStore = require('./../stores/messageStore');
+var messageActions = require('./../actions/messageActions');
 
 var MessageList = React.createClass({
   getInitialState: function() {
@@ -56,3 +56,7 @@ var MessageInput = React.createClass({
   }
 });
 
+module.exports = {
+  MessageList: MessageList,
+  MessageInput: MessageInput
+}

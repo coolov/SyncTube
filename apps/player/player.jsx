@@ -1,7 +1,7 @@
 var ReactDOM = require('react-dom');
 var React = require('react');
-var Player = require('./../../reactModules/videoPlayer/videoPlayer.jsx');
-var Messanger = require('./../../reactModules/messanger/messanger.jsx');
+var Player = require('./../../reactComponents/videoPlayer/videoPlayer.jsx');
+var Messanger = require('./../../reactComponents/messanger.jsx');
 
 var Site = React.createClass({
   render: function() {
@@ -9,8 +9,8 @@ var Site = React.createClass({
     return (
       <div>
 	<Player.Player />
-	<Messanger.Input />
-	<Messanger.List />
+	<Messanger.MessageInput />
+	<Messanger.MessageList />
       </div>
     );
   }

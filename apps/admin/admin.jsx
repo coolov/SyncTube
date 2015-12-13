@@ -3,13 +3,14 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 // Custom libs
-var VideoController = require('./../../reactModules/videoController/videoController.jsx');
+var VideoQueue = require('./../../reactComponents/videoQueue.jsx');
 
 var Site = React.createClass({
   render: function() {
     return (
       <div>
-	<VideoController.Controller queueVideoUrl="http://localhost:3000/adminAPI/queueVideo" />
+	<VideoQueue.QueueManager />
+	<VideoQueue.QueueList />
       </div>
     );
   }

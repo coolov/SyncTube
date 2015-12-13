@@ -12,7 +12,7 @@ function addMessage(message) {
 	messageNumber: listLength,
 	messageText: message
     });
-    eventEmitter.emit('messageStoreChange');
+    eventEmitter.emit('messageStoreChanged');
 }
 
 function getState() {
@@ -22,7 +22,7 @@ function getState() {
 }
 
 function onChange(callback) {
-    eventEmitter.on('messageStoreChange', callback);
+    eventEmitter.on('messageStoreChanged', callback);
 }
  
 module.exports = {

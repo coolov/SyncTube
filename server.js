@@ -5,13 +5,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 
-// Custom libs
-var playerManager = require('./tools/playerManager/playerManager');
-playerManager.queueVideo('BZP1rYjoBgI', function() {
-    var videoInfo = playerManager.currentVideoInfo();
-    io.emit('changeVideo', videoInfo.videoId);
-    //playerManager.queueVideo('8g2KKGgK-0w');
-});
+var videoQueue = require('./tools/videoQueue');
 
 // Globals
 var listenPort = process.argv[2] ? process.argv[2] : 3000
@@ -26,40 +20,36 @@ app.get('/admin', function(req, res) {
     res.sendFile('admin.html', {root: __dirname + '/apps/admin'});
 });
 
-// Admin API
+// Setting up bodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Admin API
 app.post('/adminAPI/queueVideo', function(req, res) {
     var videoId = req.body.videoId;
-    playerManager.queueVideo(videoId, function(videoQueue) {
-	res.json({videoQueue: videoQueue});
+    videoQueue.queueVideo(videoId, function() {
+	console.log(videoQueue.getQueue());
+	res.json(videoQueue.getQueue());
+	io.emit('updateQueue');
     });
 });
+
 app.post('/adminAPI/changeVideo', function(req, res) {
     var videoId = req.body.videoId;
-    playerManager.changeCurrentVideo(videoId, function(videoQueue) {
-	res.json({videoQueue: videoQueue});
+    videoQueue.changeVideo(videoId, function() {
+	res.json(videoQueue.getQueue());
+	io.emit('updateQueue');
     });
-    io.emit('changeVideo', videoId);
 });
 app.get('/adminAPI/getQueue', function(req, res) {
-    res.json({videoQueue: playerManager.getQueue()});
+    res.json(videoQueue.getQueue());
 });
 
 // Handle routing to static content
 app.use(express.static(__dirname));
 
 io.on('connection', function(socket) {
-    // Sync Video if we restart server
-    socket.emit('syncVideo', playerManager.currentVideoStartTime());
-
-    socket.on('getCurrentVideo', function() {
-	var videoInfo = playerManager.currentVideoInfo();
-	socket.emit('changeVideo', videoInfo.videoId);
-    });
-    socket.on('syncMe', function() {
-	socket.emit('syncVideo', playerManager.currentVideoStartTime());
-    });
+    io.emit('updateQueue');
     socket.on('sendMessage', function(message) {
 	socket.broadcast.emit('newMessage', message);
     })
@@ -69,9 +59,3 @@ server.listen(listenPort, '0.0.0.0', function(){
     console.log('listening on *:', listenPort);
 });
 
-// Start checking if the video is over every second
-setInterval(function () {
-    if (playerManager.isVideoOver()) {
-	playerManager.nextVideo(io);
-    }
-}, 1000);

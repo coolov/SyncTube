@@ -10,6 +10,7 @@ var Site = React.createClass({
     return (
       <div>
 	<VideoQueue.QueueManager />
+	<VideoQueue.QueueList />
       </div>
     );
   }

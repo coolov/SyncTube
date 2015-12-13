@@ -8,6 +8,9 @@ var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 
 var videoQueue = require('./tools/videoQueue');
+videoQueue.whenCurrentVideoChanges(function() {
+    io.emit('updateQueue')
+});
 
 // Globals
 var listenPort = process.argv[2] ? process.argv[2] : 3000
@@ -30,7 +33,6 @@ app.use(bodyParser.json());
 app.post('/adminAPI/queueVideo', function(req, res) {
     var videoId = req.body.videoId;
     videoQueue.queueVideo(videoId, function() {
-	console.log(videoQueue.getQueue());
 	res.json(videoQueue.getQueue());
 	io.emit('updateQueue');
     });
@@ -51,7 +53,7 @@ app.get('/adminAPI/getQueue', function(req, res) {
 app.use(express.static(__dirname));
 
 io.on('connection', function(socket) {
-    io.emit('updateQueue');
+    socket.emit('updateQueue');
 
     socket.on('sendMessage', function(message) {
 	socket.broadcast.emit('newMessage', message);

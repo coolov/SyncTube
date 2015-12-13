@@ -30,7 +30,6 @@ function changeVideo(videoId) {
 }
 
 function setQueue(videoQueue) {
-    console.log('setting queue');
     queue = videoQueue;
     eventEmitter.emit('videoQueueStoreChanged');
 }

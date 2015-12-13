@@ -6,7 +6,7 @@ var socket = require('socket.io-client')();
 var videoQueueActions = require('./../actions/videoQueueActions');
 var videoQueueStore = require('./../stores/videoQueueStore');
 
-var VideoQueue = React.createClass({
+var QueueList = React.createClass({
   getInitialState: function() {
     return videoQueueStore.getState();
   },
@@ -62,22 +62,20 @@ var QueueManager = React.createClass({
     return (
       
       <div>
-	<form>
-	  <input
-	    type="text"
-	    placeholder="videoID"
-	    value={this.state.videoID}
-	    onChange={this.handleVideoIDChange}
-	  />
-	  <input type="button" value="Change Video" onClick={this.changeVideo} />
-	  <input type="button" value="Queue Video" onClick={this.queueVideo} />
-	</form>
-	<VideoQueue queue={this.state.videoQueue} />
+	<input
+	  type="text"
+	  placeholder="videoID"
+	  value={this.state.videoID}
+	  onChange={this.handleVideoIDChange}
+	/>
+	<input type="button" value="Change Video" onClick={this.changeVideo} />
+	<input type="button" value="Queue Video" onClick={this.queueVideo} />
       </div>
     );
   }
 });
 
 module.exports = {
-  QueueManager: QueueManager
+  QueueManager: QueueManager,
+  QueueList: QueueList
 }

@@ -29,7 +29,7 @@ function changeVideo(videoId) {
 	function(error, response, body) {
 	    if (!error && response.statusCode == 200) {
 		body = JSON.parse(body)
-		videoQueueStore.setQueue(body.videoQueue);
+		//videoQueueStore.setQueue(body.videoQueue);
 	    }
 	});
 }
@@ -44,7 +44,7 @@ function queue(videoId) {
 	function(error, response, body) {
 	    if (!error && response.statusCode == 200) {
 		body = JSON.parse(body)
-		videoQueueStore.setQueue(body.videoQueue);
+		//videoQueueStore.setQueue(body.videoQueue);
 	    }
 	});
 }

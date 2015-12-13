@@ -1,10 +1,36 @@
 'use strict';
 
 var ytDataApi = require('./ytDataApi');
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
 
 var queue = [];
 var videoNumber = 0;
 var videoStartTime = 0;
+var currentTimeout = null;
+
+function newCurrentVideo() {
+    clearTimeout(currentTimeout);
+    videoStartTime = Date.now();
+    currentTimeout = setTimeout(goToNextVideo, queue[0].runTimeInMilliseconds);
+    eventEmitter.emit('newCurrentVideo');
+}
+
+function goToNextVideo() {
+    queue.shift();
+    if (queue) {
+	console.log(queue);
+    }
+    if (queue[0]) {
+	newCurrentVideo();
+    } else {
+	eventEmitter.emit('newCurrentVideo');	
+    }
+}
+
+function whenCurrentVideoChanges(callback) {
+    eventEmitter.on('newCurrentVideo', callback);
+}
 
 function queueVideo(videoId, callback) {
     ytDataApi.getVideoProperties(videoId, ['title', 'runTime'], function(videoProperties) {
@@ -16,7 +42,7 @@ function queueVideo(videoId, callback) {
 	});
 	videoNumber++;
 	if (queue.length == 1) {
-	    videoStartTime = Date.now();
+	    newCurrentVideo()
 	}
 	callback();
     });
@@ -32,7 +58,7 @@ function changeVideo(videoId, callback) {
 		videoNumber: videoNumber
 	    };
 	    videoNumber++;
-	    videoStartTime = Date.now()
+	    newCurrentVideo();
 	    callback();
 	});
     } else {
@@ -49,5 +75,6 @@ function getQueue() {
 module.exports = {
     queueVideo: queueVideo,
     changeVideo: changeVideo,
-    getQueue: getQueue
+    getQueue: getQueue,
+    whenCurrentVideoChanges: whenCurrentVideoChanges
 };

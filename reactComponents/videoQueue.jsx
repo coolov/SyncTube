@@ -54,6 +54,7 @@ var QueueManager = React.createClass({
   componentDidMount: function() {
     var self = this;
     videoQueueStore.onChange(function() {
+      console.log('store changed');
       self.setState(videoQueueStore.getState);
     });
     videoQueueActions.getQueue();

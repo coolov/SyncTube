@@ -7,10 +7,6 @@ var ytPlayerStore = require('./../stores/ytPlayerStore');
 var ytPlayerActions = require('./../actions/ytPlayerActions');
 
 var Player = React.createClass({
-  syncVideo: function(event) {
-    event.preventDefault();
-    ytPlayerActions.syncPlayer();
-  },
   componentDidMount: function () {
     ytPlayerActions.getPlayer(ytPlayerActions.syncPlayer);
   },
@@ -18,7 +14,19 @@ var Player = React.createClass({
     return (
       <div>
 	<div id="player"></div>
-	<div></div>
+      </div>
+    );
+  }
+});
+
+var SyncButton = React.createClass({
+  syncVideo: function(event) {
+    event.preventDefault();
+    ytPlayerActions.syncPlayer();
+  },
+  render: function() {
+    return (
+      <div>
 	<button type="button" onClick={this.syncVideo}>Sync Video</button>
       </div>
     );
@@ -26,5 +34,6 @@ var Player = React.createClass({
 });
 
 module.exports = {
-  Player: Player
+  Player: Player,
+  SyncButton: SyncButton
 }

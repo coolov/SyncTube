@@ -8,6 +8,7 @@ var Site = React.createClass({
     return (
       <div>
 	<Player.Player />
+	<Player.SyncButton />
 	<Messanger.MessageInput />
 	<Messanger.MessageList />
       </div>

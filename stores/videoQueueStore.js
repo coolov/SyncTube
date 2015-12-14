@@ -5,6 +5,7 @@ var eventEmitter = new events.EventEmitter();
 
 var queue = [];
 
+
 function queueVideo(videoId) {
     queue.push({
 	videoId: videoId,

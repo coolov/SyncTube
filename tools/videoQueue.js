@@ -18,9 +18,6 @@ function newCurrentVideo() {
 
 function goToNextVideo() {
     queue.shift();
-    if (queue) {
-	console.log(queue);
-    }
     if (queue[0]) {
 	newCurrentVideo();
     } else {
@@ -72,9 +69,18 @@ function getQueue() {
     };
 }
 
+function getCurrentVideoInfo() {
+    var currentVideo = queue[0] ? queue[0] : null
+    return {
+	videoId: currentVideo ? currentVideo.videoId : null,
+	videoStartTime: videoStartTime,
+    }
+}
+
 module.exports = {
     queueVideo: queueVideo,
     changeVideo: changeVideo,
     getQueue: getQueue,
-    whenCurrentVideoChanges: whenCurrentVideoChanges
+    whenCurrentVideoChanges: whenCurrentVideoChanges,
+    getCurrentVideoInfo: getCurrentVideoInfo
 };

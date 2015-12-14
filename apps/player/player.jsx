@@ -1,11 +1,10 @@
 var ReactDOM = require('react-dom');
 var React = require('react');
-var Player = require('./../../reactComponents/videoPlayer/videoPlayer.jsx');
+var Player = require('./../../reactComponents/videoPlayer.jsx');
 var Messanger = require('./../../reactComponents/messanger.jsx');
 
 var Site = React.createClass({
   render: function() {
-    console.log('rendering')
     return (
       <div>
 	<Player.Player />

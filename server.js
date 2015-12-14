@@ -9,7 +9,8 @@ var bodyParser = require('body-parser');
 
 var videoQueue = require('./tools/videoQueue');
 videoQueue.whenCurrentVideoChanges(function() {
-    io.emit('updateQueue')
+    io.emit('updateQueue');
+    io.emit('currentVideoChanged', videoQueue.getCurrentVideoInfo());
 });
 
 // Globals
@@ -53,8 +54,13 @@ app.get('/adminAPI/getQueue', function(req, res) {
 app.use(express.static(__dirname));
 
 io.on('connection', function(socket) {
+    // Admin land
     socket.emit('updateQueue');
 
+    // User Land
+    socket.on('syncVideo', function() {
+	socket.emit('currentVideoChanged', videoQueue.getCurrentVideoInfo());
+    });
     socket.on('sendMessage', function(message) {
 	socket.broadcast.emit('newMessage', message);
     })

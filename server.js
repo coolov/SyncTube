@@ -42,7 +42,6 @@ app.use(passport.session());
 
 // Handle routing to applications
 app.get('/', function(req, res) {
-    console.log(req.session);
     res.sendFile('player.html', {root: __dirname + '/apps/player'});
 });
 app.get('/admin', function(req, res) {
@@ -50,10 +49,13 @@ app.get('/admin', function(req, res) {
 });
 
 // User API
-app.post('/login', passport.authenticate('localSignUp'), function(req, res) {
+app.post('/userApi/login', passport.authenticate('localSignUp'), function(req, res) {
     console.log(req.user);
     console.log(req.session);
-    res.json(req.user);
+    var user = { user: {
+	username: req.user.username
+    }};
+    res.json(user);
 });
 
 // Admin API

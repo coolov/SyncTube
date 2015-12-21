@@ -25,10 +25,16 @@ function addUser(username, password) {
     return newUser
 }
 
-function getUser(username, callback) {
+function getUserByUsername(username, callback) {
     User.findOne({username:username}, function(err, user) {
 	if (err) {throw err;}
 	callback(user);
+    });
+}
+
+function getUserById(id, callback) {
+    User.findById(id, function(err, user) {
+	callback(err, user);
     });
 }
 
@@ -36,6 +42,7 @@ module.exports = {
     controller: {
 	validPassword: validPassword,
 	addUser: addUser,
-	getUser: getUser
+	getUserByUsername: getUserByUsername,
+	getUserById: getUserById
     }
 };

@@ -39,7 +39,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(passport.authenticate('localSignUp'));
 
 // Handle routing to applications
 app.get('/', function(req, res) {
@@ -51,8 +50,9 @@ app.get('/admin', function(req, res) {
 });
 
 // User API
-app.post('/login', function(req, res) {
+app.post('/login', passport.authenticate('localSignUp'), function(req, res) {
     console.log(req.user);
+    console.log(req.session);
     res.json(req.user);
 });
 

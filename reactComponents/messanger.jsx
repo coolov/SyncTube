@@ -1,8 +1,6 @@
 'use strict';
 
 var React = require('react');
-var events = require('events');
-var eventEmitter = new events.EventEmitter();
 var messageStore = require('./../stores/messageStore');
 var messageActions = require('./../actions/messageActions');
 

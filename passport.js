@@ -9,16 +9,16 @@ module.exports = function(passport) {
 	userController.getUserById(id, callback);
     });
     passport.use('localSignUp', new LocalStrategy(
-	function(username, password, callback){
+	function(username, password, next){
 	    userController.getUserByUsername(username, function(user) {
 		if (!user) {
 		    var newUser = userController.addUser(username, password);
-		    return callback(null, newUser);
+		    return next(null, newUser);
 		}
 		if (!userController.validPassword(user, password)) {
-		    return callback(null, null);
+		    return next(null, null);
 		}
-		return callback(null, user);
+		return next(null, user);
 	    });
 	}
     ));

@@ -5,6 +5,9 @@ var loginUrl = siteUrl + '/userApi/Login';
 
 var request = require('request');
 var userStore = require('./../stores/userStore');
+var socket = require('socket.io-client')();
+
+socket.emit('foo');
 
 function login(username, password) {
     request.post({

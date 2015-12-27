@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-var salt = require('./../settings').salt;
+var settings = require('./../settings');
+var userDbPath = settings.dbUri + settings.userCollection
+mongoose.connect(userDbPath);
 
 var User = mongoose.model('User', {
     username: String,
@@ -26,6 +28,7 @@ function addUser(username, password) {
 }
 
 function getUserByUsername(username, callback) {
+    console.log(username);
     User.findOne({username:username}, function(err, user) {
 	if (err) {throw err;}
 	callback(user);
@@ -43,6 +46,7 @@ module.exports = {
 	validPassword: validPassword,
 	addUser: addUser,
 	getUserByUsername: getUserByUsername,
-	getUserById: getUserById
+	getUserById: getUserById,
+	middleware: null
     }
 };

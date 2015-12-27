@@ -1,3 +1,6 @@
 module.exports = {
-    dbUrl: 'mongodb://localhost/syncTube',
+    dbUri: 'mongodb://localhost/',
+    userCollection: 'users',
+    sessionCollection: 'sessions',
+    sessionSecret: 'changeMePlease'
 }

@@ -7,18 +7,18 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 var session = require('express-session');
-var mongoose = require('mongoose');
 var passport = require('passport');
+var MongoDBStore = require('connect-mongodb-session')(session);
+
 require('./passport')(passport);
 
-var dbUrl = require('./settings').dbUrl;
+var settings = require('./settings');
 var videoQueue = require('./tools/videoQueue');
 var User = require('./models/user');
 videoQueue.whenCurrentVideoChanges(function() {
     io.emit('updateQueue');
     io.emit('currentVideoChanged', videoQueue.getCurrentVideoInfo());
 });
-mongoose.connect(dbUrl);
 
 // Globals
 var listenPort = process.argv[2] ? process.argv[2] : 3000
@@ -33,9 +33,16 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname));
 // Session handling
 app.use(session({
-    secret: 'supersecretstring',
-    saveUninitialized: true,
-    resave: true
+    secret: settings.sessionSecret,
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week 
+    },
+    store: new MongoDBStore({
+	uri: settings.dbUri,
+	collection: settings.sessionCollection
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -49,9 +56,16 @@ app.get('/admin', function(req, res) {
 });
 
 // User API
-app.post('/userApi/login', passport.authenticate('localSignUp'), function(req, res) {
-    console.log(req.user);
-    console.log(req.session);
+app.post('/userApi/login', function(req, res, next) {
+    if (req.isAuthenticated()) {
+	var user = { user: {
+	    username: req.user.username
+	}};
+	res.json(user);
+    } else {
+	return next()
+    }
+}, passport.authenticate('localSignUp'), function(req, res) {
     var user = { user: {
 	username: req.user.username
     }};
@@ -79,6 +93,10 @@ app.get('/adminAPI/getQueue', function(req, res) {
 });
 
 io.on('connection', function(socket) {
+    socket.on('foo', function() {
+	console.log(socket.id);
+    });
+
     // Admin land
     socket.emit('updateQueue');
 

@@ -29,20 +29,28 @@ var LoginForm = React.createClass({
     userStore.onChange(function() {
       self.setState(userStore.getState());
     });
+    userActions.login(this.state.username, this.state.password);
   },
   render: function() {
-    console.log('=====');
-    console.log(this.state.user);
-    var foo = !this.state.user ? <h1>test</h1> : <h1>{this.state.user.username}</h1>;
+    var username = this.state.user ? <h1>{this.state.user.username}</h1> : null;
+    if (!this.state.user) {
+      var loginForm  = (
+	<div>
+	  <form onSubmit={this.loginFormSubmit}>
+	    <input type="text" value={this.state.username} onChange={this.usernameChange} name="username" />
+	    <input type="text" value={this.state.password} onChange={this.passwordChange} name="password" />
+	    <input type="submit" value="Login" />
+	  </form>
+	</div>
+      );
+    } else {
+      var loginForm = <div>loggedin</div>;
+    }
 
     return (
       <div>
-	{foo}
-	<form onSubmit={this.loginFormSubmit}>
-	  <input type="text" value={this.state.username} onChange={this.usernameChange} name="username" />
-	  <input type="text" value={this.state.password} onChange={this.passwordChange} name="password" />
-	  <input type="submit" value="Login" />
-	</form>
+	{username}
+	{loginForm}
       </div>
     );
   }

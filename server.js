@@ -55,8 +55,7 @@ app.get('/admin', function(req, res) {
     res.sendFile('admin.html', {root: __dirname + '/apps/admin'});
 });
 
-// User API
-app.post('/userApi/login', function(req, res, next) {
+function returnUserOrContinue (req, res, next) {
     if (req.isAuthenticated()) {
 	var user = { user: {
 	    username: req.user.username
@@ -65,11 +64,24 @@ app.post('/userApi/login', function(req, res, next) {
     } else {
 	return next()
     }
-}, passport.authenticate('localSignUp'), function(req, res) {
-    var user = { user: {
-	username: req.user.username
-    }};
-    res.json(user);
+}
+
+// User API
+app.post('/userApi/login',
+	 returnUserOrContinue,
+	 passport.authenticate('localSignUp'),
+	 function(req, res) {
+	     var user = { user: {
+		 username: req.user.username
+	     }};
+	     res.json(user);
+	 });
+
+app.post('/userApi/logout', function(req, res) {
+    if (req.isAuthenticated()) {
+	req.logOut();
+    }
+    res.send(null);
 });
 
 // Admin API

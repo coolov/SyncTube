@@ -19,21 +19,23 @@ var App = React.createClass({
     });
     userActions.login(null, null);
   },
-  loginFormSubmit: function(username, password) {
-    console.log(username);
-    console.log(password);
+  login: function(username, password) {
     userActions.login(username, password);
+  },
+  logout: function() {
+    userActions.logout();
   },
   render: function() {
     var user = this.state.user;
-    var loginForm = user ? null : <Login.LoginForm loginSubmit={this.loginFormSubmit} />;
-    var username = user ? <h1>{user.username}</h1> : null
+    console.log(user);
+    var authArea =  this.state.user ? <Login.LogoutButton logout={this.logout} /> : <Login.LoginForm login={this.login} />;
+    var username = this.state.user ? <h1>{user.username}</h1> : "Not Logged In";
     return (
       <div>
 	<Player.Player />
 	<Player.SyncButton />
 	{username}
-	{loginForm}
+	{authArea}
 	<Messanger.MessageInput />
 	<Messanger.MessageList />
       </div>

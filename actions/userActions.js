@@ -1,13 +1,12 @@
 'use strict';
 
 var siteUrl = 'http://localhost:3000';
-var loginUrl = siteUrl + '/userApi/Login';
+var loginUrl = siteUrl + '/userApi/login';
+var logoutUrl = siteUrl + '/userApi/logout';
 
 var request = require('request');
 var userStore = require('./../stores/userStore');
 var socket = require('socket.io-client')();
-
-socket.emit('foo');
 
 function login(username, password) {
     request.post({
@@ -22,6 +21,12 @@ function login(username, password) {
 	});
 }
 
-module.exports = {
-    login: login
+function logout() {
+    userStore.setUser({'user': null});
+    request.post(logoutUrl);
 }
+
+module.exports= {
+    login: login,
+    logout: logout
+};

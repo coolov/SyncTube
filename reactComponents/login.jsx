@@ -17,7 +17,11 @@ var LoginForm = React.createClass({
   },
   loginFormSubmit: function(event) {
     event.preventDefault();
-    this.props.loginSubmit(this.state.username, this.state.password);
+    this.props.login(this.state.username, this.state.password);
+    this.setState({
+      username: '',
+      password: ''
+    });
   },
   render: function() {
     var loginForm  = (
@@ -36,6 +40,19 @@ var LoginForm = React.createClass({
   }
 });
 
+var LogoutButton = React.createClass({
+  logoutClicked: function(){
+    this.props.logout()
+  },
+  render: function() {
+
+    return (
+      <button onClick={this.logoutClicked}>Logout</button>
+    );
+  }
+});
+
 module.exports = {
-  LoginForm: LoginForm
+  LoginForm: LoginForm,
+  LogoutButton: LogoutButton
 };
